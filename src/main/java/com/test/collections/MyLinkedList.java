@@ -5,6 +5,8 @@ package com.test.collections;
  */
 public class MyLinkedList<T> {
 
+    public static int MIN_INDEX = 0;
+
     private MyNode<T> head;
     private int counter = 0;
 
@@ -13,8 +15,7 @@ public class MyLinkedList<T> {
         MyNode<T> temp = new MyNode<T>(data);
 
         if (head == null) {
-            head = temp;
-            return;
+            head = new MyNode<T>(data);
         }
 
         MyNode<T> currentNode = head;
@@ -32,15 +33,19 @@ public class MyLinkedList<T> {
     }
 
     public void add(T data, int index) {
+        if (index < MIN_INDEX)
+            throw new IndexOutOfBoundsException("index start from" + MIN_INDEX);
 
         MyNode<T> temp = new MyNode<T>(data);
 
         if (head == null)
-            head = temp;
+            head = new MyNode<T>(data);
 
-        MyNode<T> current = head;
+        MyNode<T> current = head.getNext();
 
-        for (int i = 0; i < index && current.getNext() != null; i++) {
+        for (int i = 0; i < index; i++) {
+            if (current.getNext() == null)
+                throw new IndexOutOfBoundsException("the max index in Linked List found =" + (getCounter() - 1) + " but you insert " + index);
             current = current.getNext();
         }
 
@@ -53,15 +58,19 @@ public class MyLinkedList<T> {
 
     public T get(int index) {
 
+        if (index < MIN_INDEX)
+            throw new IndexOutOfBoundsException("index start from" + MIN_INDEX);
+
         MyNode<T> current = null;
 
         if (head == null)
-            return null;
+            throw new IndexOutOfBoundsException("the max index in Linked List found =" + (getCounter() - 1) + " but you insert " + index);
 
-        current = head;
+
+        current = head.getNext();
         for (int i = 0; i < index; i++) {
             if (current.getNext() == null)
-                return null;
+                throw new IndexOutOfBoundsException("the max index in Linked List found =" + (getCounter() - 1) + " but you insert " + index);
 
             current = current.getNext();
         }
@@ -72,24 +81,54 @@ public class MyLinkedList<T> {
     }
 
 
-    public boolean remove(int index){
-        if(head ==null)
-            return false;
+    public boolean remove(int index) {
+        if (head == null)
+            throw new IndexOutOfBoundsException("Linked list is already empty");
 
-        MyNode<T> current=head;
+        MyNode<T> current = head;
 
-        for(int i=0;i<index;i++){
-            if(current.getNext()==null)
-                return false;
+        for (int i = 0; i < index; i++) {
+            if (current.getNext() == null)
+                throw new IndexOutOfBoundsException("the max index in Linked List found =" + (getCounter() - 1) + " but you insert " + index);
 
-            current= current.getNext();
+
+            current = current.getNext();
         }
 
         current.setNext(current.getNext().getNext());
+        counter--;
         return true;
     }
 
     public int size() {
-    return counter;
+        return counter;
+    }
+
+    public boolean addAll(MyLinkedList<T> myLinkedList) {
+
+        int myListSize=myLinkedList.size();
+        if(head==null) {
+            if (myListSize < 1)
+                return false;
+
+            if (myListSize > 0)
+                head = new MyNode<T>(myLinkedList.get(0));
+        }
+
+        for(int i=0;i<myLinkedList.size();i++){
+            this.add(myLinkedList.get(i));
+        }
+        return true;
+    }
+
+    public void clear() {
+        head=null;
+        counter=0;
+    }
+
+    public T getLast() {
+        if(head==null)
+            return null;
+        return this.get(counter-1);
     }
 }
