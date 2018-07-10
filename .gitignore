@@ -16,3 +16,4 @@ data
 .springBeans
 application.properties
 /.metadata/
+.idea
